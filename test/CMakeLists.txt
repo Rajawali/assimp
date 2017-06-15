@@ -77,6 +77,7 @@ SET( TEST_SRCS
   unit/utColladaExportCamera.cpp
   unit/utColladaExportLight.cpp
   unit/utColladaImportExport.cpp
+  unit/utConvertUTF8.cpp
   unit/utCSMImportExport.cpp
   unit/utDefaultIOStream.cpp
   unit/utDXFImporterExporter.cpp

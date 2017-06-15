@@ -58,7 +58,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ByteSwapper.h"
 #include "StreamReader.h"
 #include "TinyFormatter.h"
-#include "../contrib/ConvertUTF/ConvertUTF.h"
+
+#include <utf8proc/utf8proc.h>
+
+//#include "../contrib/ConvertUTF/ConvertUTF.h"
 #include <assimp/IOSystem.hpp>
 #include <assimp/DefaultLogger.hpp>
 #include <assimp/scene.h>
@@ -175,24 +178,38 @@ static void UnknownChunk(StreamReaderLE* stream, const SIBChunk& chunk)
 }
 
 // Reads a UTF-16LE string and returns it at UTF-8.
-static aiString ReadString(StreamReaderLE* stream, uint32_t numWChars)
-{
+static aiString ReadString( StreamReaderLE* stream, uint32_t numWChars ) {
+    if ( 0 == numWChars ) {
+        aiString result;
+        return result;
+    }
+
+    std::vector<char> buffer;
+    buffer.resize(numWChars*4+1);
     // Allocate buffers (max expansion is 1 byte -> 4 bytes for UTF-8)
-    UTF16* temp = new UTF16[numWChars];
-    UTF8* str = new UTF8[numWChars * 4 + 1];
-    for (uint32_t n=0;n<numWChars;n++)
-        temp[n] = stream->GetU2();
+    //UTF16* temp = new UTF16[numWChars];
+    //UTF8* str = new UTF8[numWChars * 4 + 1];
+    size_t offset( 0 );
+    for (uint32_t n=0;n<numWChars;n++) {
+        uint16_t v = stream->GetU2();
+        char *ptr = &buffer[ offset ];
+        ::memcpy( ptr, &v, sizeof( uint16_t ) );
+        offset += sizeof( uint16_t );
+    }
+        //temp[n] = stream->GetU2();
 
     // Convert it and NUL-terminate.
-    const UTF16 *start = temp, *end = temp + numWChars;
+    /*const UTF16 *start = temp, *end = temp + numWChars;
     UTF8 *dest = str, *limit = str + numWChars*4;
     ConvertUTF16toUTF8(&start, end, &dest, limit, lenientConversion);
-    *dest = '\0';
+    *dest = '\0';*/
+
+    utf8proc_reencode((utf8proc_int32_t*)&buffer[0], buffer.size(), UTF8PROC_NLF2LF);
 
     // Return the final string.
-    aiString result = aiString((const char *)str);
-    delete[] str;
-    delete[] temp;
+    aiString result = aiString((const char *)&buffer[0]);
+    /*delete[] str;
+    delete[] temp;*/
     return result;
 }
 

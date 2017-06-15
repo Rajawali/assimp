@@ -61,16 +61,18 @@ class BaseProcess;
 class SharedPostProcessInfo;
 class IOStream;
 
-
 // utility to do char4 to uint32 in a portable manner
 #define AI_MAKE_MAGIC(string) ((uint32_t)((string[0] << 24) + \
     (string[1] << 16) + (string[2] << 8) + string[3]))
 
 // ---------------------------------------------------------------------------
 template <typename T>
-struct ScopeGuard
-{
-    explicit ScopeGuard(T* obj) : obj(obj), mdismiss() {}
+struct ScopeGuard {
+    explicit ScopeGuard(T* obj) 
+    : obj(obj)
+    , mdismiss() {
+        // empty
+    }
     ~ScopeGuard () throw() {
         if (!mdismiss) {
             delete obj;
@@ -79,7 +81,7 @@ struct ScopeGuard
     }
 
     T* dismiss() {
-        mdismiss=true;
+        mdismiss = true;
         return obj;
     }
 
@@ -100,8 +102,6 @@ private:
     T* obj;
     bool mdismiss;
 };
-
-
 
 // ---------------------------------------------------------------------------
 /** FOR IMPORTER PLUGINS ONLY: The BaseImporter defines a common interface

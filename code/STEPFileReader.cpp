@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "TinyFormatter.h"
 #include "fast_atof.h"
 #include <memory>
-
+#include <utf8proc/utf8proc.h>
 
 using namespace Assimp;
 namespace EXPRESS = STEP::EXPRESS;
@@ -389,10 +389,12 @@ std::shared_ptr<const EXPRESS::DataType> EXPRESS::DataType::Parse(const char*& i
         // assimp is supposed to output UTF8 strings, so we have to deal
         // with foreign encodings.
         std::string stemp = std::string(start, static_cast<size_t>(cur - start));
-        if(!StringToUTF8(stemp)) {
+        utf8proc_reencode((utf8proc_int32_t*)&stemp[0], stemp.size(), UTF8PROC_NLF2LF);
+
+        //if(!StringToUTF8(stemp)) {
             // TODO: route this to a correct logger with line numbers etc., better error messages
-            DefaultLogger::get()->error("an error occurred reading escape sequences in ASCII text");
-        }
+//            DefaultLogger::get()->error("an error occurred reading escape sequences in ASCII text");
+  //      }
 
         return std::make_shared<EXPRESS::STRING>(stemp);
     }

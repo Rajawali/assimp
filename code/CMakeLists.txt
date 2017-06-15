@@ -470,7 +470,7 @@ ADD_ASSIMP_IMPORTER( IFC
   STEPFile.h
   STEPFileReader.h
   STEPFileReader.cpp
-  STEPFileEncoding.cpp
+  #STEPFileEncoding.cpp
   STEPFileEncoding.h
 )
 if (ASSIMP_BUILD_IFC_IMPORTER)
@@ -695,11 +695,11 @@ SET( Extra_SRCS
 )
 SOURCE_GROUP( Extra FILES ${Extra_SRCS})
 
-SET( ConvertUTF_SRCS
-  ../contrib/ConvertUTF/ConvertUTF.h
-  ../contrib/ConvertUTF/ConvertUTF.c
-)
-SOURCE_GROUP( ConvertUTF FILES ${ConvertUTF_SRCS})
+#SET( ConvertUTF_SRCS
+#  ../contrib/ConvertUTF/ConvertUTF.h
+#  ../contrib/ConvertUTF/ConvertUTF.c
+#)
+#SOURCE_GROUP( ConvertUTF FILES ${ConvertUTF_SRCS})
 
 SET( Clipper_SRCS
   ../contrib/clipper/clipper.hpp
@@ -835,7 +835,7 @@ SET( assimp_src
 
   # Third-party libraries
   ${IrrXML_SRCS}
-  ${ConvertUTF_SRCS}
+  #${ConvertUTF_SRCS}
   ${unzip_compile_SRCS}
   ${Poly2Tri_SRCS}
   ${Clipper_SRCS}
@@ -861,7 +861,7 @@ ENDIF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
 
 ADD_LIBRARY( assimp ${assimp_src} )
 
-TARGET_LINK_LIBRARIES(assimp ${ZLIB_LIBRARIES} ${OPENDDL_PARSER_LIBRARIES} ${IRRXML_LIBRARY} )
+TARGET_LINK_LIBRARIES(assimp ${ZLIB_LIBRARIES} ${OPENDDL_PARSER_LIBRARIES} ${IRRXML_LIBRARY} utf8proc )
 
 if(ANDROID AND ASSIMP_ANDROID_JNIIOSYSTEM)
   set(ASSIMP_ANDROID_JNIIOSYSTEM_PATH port/AndroidJNI)
