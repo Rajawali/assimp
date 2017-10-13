@@ -55,6 +55,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include <cassert>
 
+#include <stdlib.h>
+
 #include <contrib/unzip/unzip.h>
 
 namespace Assimp {
@@ -299,12 +301,12 @@ D3MFZipArchive::D3MFZipArchive(IOSystem* pIOHandler, const std::string& rFile)
     : m_ZipFileHandle(NULL), m_ArchiveMap()
 {
     if (! rFile.empty())
-    {                
-        zlib_filefunc_def mapping = IOSystem2Unzip::get(pIOHandler);            
+    {
+        zlib_filefunc_def mapping = IOSystem2Unzip::get(pIOHandler);
 
         m_ZipFileHandle = unzOpen2(rFile.c_str(), &mapping);
 
-        if(m_ZipFileHandle != NULL) {            
+        if(m_ZipFileHandle != NULL) {
             mapArchive();
         }
     }
@@ -446,7 +448,7 @@ class OpcPackageRelationshipReader
 public:
 
     OpcPackageRelationshipReader(XmlReader* xmlReader)
-    {        
+    {
 
         while(xmlReader->read())
         {
@@ -459,7 +461,7 @@ public:
     }
 
     void ParseRootNode(XmlReader* xmlReader)
-    {       
+    {
         ParseAttributes(xmlReader);
 
         while(xmlReader->read())
@@ -478,7 +480,7 @@ public:
     }
 
     void ParseChildNode(XmlReader* xmlReader)
-    {        
+    {
         OpcPackageRelationshipPtr relPtr(new OpcPackageRelationship());
 
         relPtr->id = xmlReader->getAttributeValue(XmlTag::RELS_ATTRIB_ID.c_str());
@@ -493,8 +495,8 @@ public:
 
 D3MFOpcPackage::D3MFOpcPackage(IOSystem* pIOHandler, const std::string& rFile)
     : m_RootStream(nullptr)
-{    
-    zipArchive.reset(new D3MF::D3MFZipArchive( pIOHandler, rFile ));    
+{
+    zipArchive.reset(new D3MF::D3MFZipArchive( pIOHandler, rFile ));
     if(!zipArchive->isOpen()) {
         throw DeadlyImportError("Failed to open file " + rFile+ ".");
     }
